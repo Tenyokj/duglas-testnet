@@ -1,0 +1,82 @@
+services:
+  node1:
+    build: .
+    container_name: blockchainjs-node1
+    environment:
+      NODE_RUNTIME: docker-testnet
+      P2P_PORT: 6001
+      HTTP_PORT: 3001
+      WALLET_FILE: /data/wallet.json
+      STATE_FILE: /data/state.json
+      API_RATE_LIMIT: 300
+      FAUCET_COOLDOWN_MS: 15000
+    ports:
+      - "3001:3001"
+      - "6001:6001"
+    volumes:
+      - node1_data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/status').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  node2:
+    build: .
+    container_name: blockchainjs-node2
+    depends_on:
+      node1:
+        condition: service_healthy
+    environment:
+      NODE_RUNTIME: docker-testnet
+      P2P_PORT: 6002
+      HTTP_PORT: 3002
+      BOOTSTRAP_PEERS: ws://node1:6001
+      WALLET_FILE: /data/wallet.json
+      STATE_FILE: /data/state.json
+      API_RATE_LIMIT: 300
+      FAUCET_COOLDOWN_MS: 15000
+    ports:
+      - "3002:3002"
+      - "6002:6002"
+    volumes:
+      - node2_data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3002/status').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  node3:
+    build: .
+    container_name: blockchainjs-node3
+    depends_on:
+      node1:
+        condition: service_healthy
+    environment:
+      NODE_RUNTIME: docker-testnet
+      P2P_PORT: 6003
+      HTTP_PORT: 3003
+      BOOTSTRAP_PEERS: ws://node1:6001
+      WALLET_FILE: /data/wallet.json
+      STATE_FILE: /data/state.json
+      API_RATE_LIMIT: 300
+      FAUCET_COOLDOWN_MS: 15000
+    ports:
+      - "3003:3003"
+      - "6003:6003"
+    volumes:
+      - node3_data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3003/status').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+volumes:
+  node1_data:
+  node2_data:
+  node3_data:

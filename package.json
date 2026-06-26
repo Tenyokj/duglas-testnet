@@ -1,0 +1,52 @@
+{
+  "name": "duglas-testnet",
+  "version": "1.0.0",
+  "description": "Duglas Testnet CLI and local blockchain testnet runtime",
+  "main": "src/core/blockchain.js",
+  "bin": {
+    "duglas": "./bin/duglas.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "scripts/reset_state.js",
+    "README.md",
+    "docs",
+    "LICENSE",
+    "Dockerfile",
+    "docker-compose.yml"
+  ],
+  "scripts": {
+    "start": "node src/node/index.js",
+    "start:node1": "P2P_PORT=6001 HTTP_PORT=3001 node src/node/index.js",
+    "start:node2": "P2P_PORT=6002 HTTP_PORT=3002 BOOTSTRAP_PEERS=ws://localhost:6001 node src/node/index.js",
+    "start:node3": "P2P_PORT=6003 HTTP_PORT=3003 BOOTSTRAP_PEERS=ws://localhost:6001 node src/node/index.js",
+    "cli": "node bin/duglas.js",
+    "reset:state": "node scripts/reset_state.js",
+    "reset:local": "node scripts/reset_state.js --wallets",
+    "testnet:up": "docker compose up --build",
+    "testnet:down": "docker compose down",
+    "testnet:reset": "docker compose down -v",
+    "pack:preview": "npm pack --dry-run",
+    "smoke:cli": "node scripts/smoke_cli.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "blockchain",
+    "testnet",
+    "cli",
+    "p2p",
+    "wallet",
+    "pow"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "elliptic": "^6.6.1",
+    "ws": "^8.20.0"
+  }
+}

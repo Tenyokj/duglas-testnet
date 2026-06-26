@@ -1,0 +1,9 @@
+node_modules/
+.npm-cache/
+*.tgz
+
+state-*.json
+wallet-*.json
+wallets-*/
+
+tmp-*.json
